@@ -1,9 +1,5 @@
 import { prisma } from '../../config/PrismaClient';
-import {
-  CreateInvoiceParams,
-  findProduct,
-  ProductItem,
-} from './InvoiceInterface';
+import { CreateInvoiceParams, findProduct } from './InvoiceInterface';
 
 export const createInvoiceService = async ({
   customer_name,
@@ -55,4 +51,28 @@ export const createInvoiceService = async ({
       });
     }
   });
+};
+
+export const getInvoiceService = async (pageNumber: number) => {
+  const LIMIT_PAGE = 5;
+
+  const findAllInvoice = await prisma.invoice.findMany();
+
+  const totalPage = Math.ceil(findAllInvoice.length / LIMIT_PAGE);
+
+  const getInvoiceData = await prisma.invoice.findMany({
+    include: {
+      product: true,
+    },
+    skip: (Number(pageNumber) - 1) * LIMIT_PAGE,
+    take: LIMIT_PAGE,
+    orderBy: {
+      createdAt: 'asc',
+    },
+  });
+
+  return {
+    totalPage,
+    getInvoiceData,
+  };
 };

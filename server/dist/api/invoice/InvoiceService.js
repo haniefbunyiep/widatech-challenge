@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createInvoiceService = void 0;
+exports.getInvoiceService = exports.createInvoiceService = void 0;
 const PrismaClient_1 = require("../../config/PrismaClient");
 const createInvoiceService = (_a) => __awaiter(void 0, [_a], void 0, function* ({ customer_name, sales_person, selected_product, payment_type, }) {
     yield PrismaClient_1.prisma.$transaction((prisma) => __awaiter(void 0, void 0, void 0, function* () {
@@ -53,3 +53,23 @@ const createInvoiceService = (_a) => __awaiter(void 0, [_a], void 0, function* (
     }));
 });
 exports.createInvoiceService = createInvoiceService;
+const getInvoiceService = (pageNumber) => __awaiter(void 0, void 0, void 0, function* () {
+    const LIMIT_PAGE = 5;
+    const findAllInvoice = yield PrismaClient_1.prisma.invoice.findMany();
+    const totalPage = Math.ceil(findAllInvoice.length / LIMIT_PAGE);
+    const getInvoiceData = yield PrismaClient_1.prisma.invoice.findMany({
+        include: {
+            product: true,
+        },
+        skip: (Number(pageNumber) - 1) * LIMIT_PAGE,
+        take: LIMIT_PAGE,
+        orderBy: {
+            createdAt: 'asc',
+        },
+    });
+    return {
+        totalPage,
+        getInvoiceData,
+    };
+});
+exports.getInvoiceService = getInvoiceService;

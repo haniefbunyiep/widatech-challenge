@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.createInvoice = void 0;
+exports.getInvoice = exports.createInvoice = void 0;
 const InvoiceService_1 = require("./InvoiceService");
 const createInvoice = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -31,3 +31,21 @@ const createInvoice = (req, res, next) => __awaiter(void 0, void 0, void 0, func
     }
 });
 exports.createInvoice = createInvoice;
+const getInvoice = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { currentPage } = req.query;
+        const { totalPage, getInvoiceData } = yield (0, InvoiceService_1.getInvoiceService)(Number(currentPage));
+        return res.status(200).send({
+            error: false,
+            message: 'Get Invoice',
+            data: {
+                invoiceData: getInvoiceData,
+                totalPage,
+            },
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+});
+exports.getInvoice = getInvoice;

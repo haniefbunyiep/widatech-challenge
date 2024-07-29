@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
-import { createInvoiceService } from './InvoiceService';
+import { createInvoiceService, getInvoiceService } from './InvoiceService';
 
 export const createInvoice = async (
   req: Request,
@@ -21,6 +21,31 @@ export const createInvoice = async (
       error: false,
       message: 'Invoice Created',
       data: null,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getInvoice = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { currentPage } = req.query;
+
+    const { totalPage, getInvoiceData } = await getInvoiceService(
+      Number(currentPage)
+    );
+
+    return res.status(200).send({
+      error: false,
+      message: 'Get Invoice',
+      data: {
+        invoiceData: getInvoiceData,
+        totalPage,
+      },
     });
   } catch (error) {
     next(error);
