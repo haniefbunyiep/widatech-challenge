@@ -37,7 +37,7 @@ export const createInvoiceService = async ({
           sales_person,
           product_id: selected_product[i].product_id,
           total_price:
-            selected_product[i].product_price * selected_product[i].quantity,
+            findProduct[i].product_price * selected_product[i].quantity,
         },
       });
 

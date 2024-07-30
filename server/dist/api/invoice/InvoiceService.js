@@ -38,7 +38,7 @@ const createInvoiceService = (_a) => __awaiter(void 0, [_a], void 0, function* (
                     quantity: selected_product[i].quantity,
                     sales_person,
                     product_id: selected_product[i].product_id,
-                    total_price: selected_product[i].product_price * selected_product[i].quantity,
+                    total_price: findProduct[i].product_price * selected_product[i].quantity,
                 },
             });
             yield prisma.product.update({

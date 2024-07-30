@@ -17,6 +17,7 @@ import { invoiceFormSchema } from '@/helper/invoice/schema';
 import { useFormik } from 'formik';
 import PaymentInput from '../Dropdown/PaymentDropdown';
 import ProductInput from '../Dropdown/ProductDropdown';
+import { MdDelete } from 'react-icons/md';
 
 export default function InvoiceModal() {
   const formik = useFormik({
@@ -26,7 +27,6 @@ export default function InvoiceModal() {
       payment_method: '',
       selected_product: [
         {
-          product_id: '',
           quantity: '',
           product_price: '',
         },
@@ -114,7 +114,7 @@ export default function InvoiceModal() {
                     type='button'
                     onClick={() => handleRemoveProduct(index)}
                   >
-                    Remove
+                    <MdDelete />
                   </Button>
                 </div>
               ))}

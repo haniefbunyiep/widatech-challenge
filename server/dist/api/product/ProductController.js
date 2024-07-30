@@ -9,11 +9,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getProduct = void 0;
+exports.getProductById = exports.getProduct = void 0;
 const ProductService_1 = require("./ProductService");
 const getProduct = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const getProductResult = yield (0, ProductService_1.getProductService)();
+        const { name } = req.query;
+        const getProductResult = yield (0, ProductService_1.getProductService)(name);
         return res.status(200).send({
             error: false,
             message: 'Get Product',
@@ -25,3 +26,18 @@ const getProduct = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
     }
 });
 exports.getProduct = getProduct;
+const getProductById = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { productId } = req.query;
+        const getProductResult = yield (0, ProductService_1.getProductByIdService)(Number(productId));
+        return res.status(200).send({
+            error: false,
+            message: 'Get Product By Id',
+            data: getProductResult,
+        });
+    }
+    catch (error) {
+        next(error);
+    }
+});
+exports.getProductById = getProductById;

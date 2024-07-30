@@ -9,9 +9,30 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getProductService = void 0;
+exports.getProductByIdService = exports.getProductService = void 0;
 const PrismaClient_1 = require("../../config/PrismaClient");
-const getProductService = () => __awaiter(void 0, void 0, void 0, function* () {
+const getProductService = (name) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(name);
+    if (name) {
+        const findProductByName = yield PrismaClient_1.prisma.product.findMany({
+            where: {
+                product_name: {
+                    contains: name,
+                },
+            },
+        });
+        if (findProductByName.length == 0)
+            throw new Error('Product not found');
+        return findProductByName;
+    }
     return yield PrismaClient_1.prisma.product.findMany();
 });
 exports.getProductService = getProductService;
+const getProductByIdService = (productId) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield PrismaClient_1.prisma.product.findUnique({
+        where: {
+            id: productId,
+        },
+    });
+});
+exports.getProductByIdService = getProductByIdService;

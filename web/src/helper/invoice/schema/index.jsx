@@ -7,9 +7,8 @@ export const invoiceFormSchema = Yup.object().shape({
   selected_product: Yup.array()
     .of(
       Yup.object({
-        product_id: Yup.string().required('Required'),
-        quantity: Yup.string().required('Quantity is required'),
-        product_price: Yup.string().required('Required'),
+        product_id: Yup.number().required('Required'),
+        quantity: Yup.number().required('Quantity is required'),
       }),
     )
     .required('At least one item is required'),

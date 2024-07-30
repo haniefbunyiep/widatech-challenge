@@ -40,7 +40,7 @@ export default function InvoiceTable() {
 
   const data = dataInvoice?.data?.data?.invoiceData;
 
-  console.log(data);
+  // console.log(data);
 
   const handleNextItem = () => {
     setCurrentPage((prevPage) => String(Number(prevPage) + 1));
