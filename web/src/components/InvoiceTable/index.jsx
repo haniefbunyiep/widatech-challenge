@@ -18,8 +18,15 @@ import {
 import { useGetInvoice } from '@/helper/invoice/hooks/useGetInvoice';
 import { FirstCapital } from '@/helper/PaymentType';
 import PaginationDemo from '../Pagination';
-import { useCallback, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSearchParams, usePathname, useRouter } from 'next/navigation';
+import InvoiceModal from '../InvoiceModal';
+
+const createQueryString = (searchParams, name, value) => {
+  const params = new URLSearchParams(searchParams);
+  params.set(name, value);
+  return params.toString();
+};
 
 export default function InvoiceTable() {
   const searchParams = useSearchParams();
@@ -30,19 +37,9 @@ export default function InvoiceTable() {
     searchParams.get('page') || '1',
   );
   const [totalPage, setTotalPage] = useState();
-  const { dataInvoice, invoiceIsloading, refetch } = useGetInvoice(currentPage);
+  const { dataInvoice } = useGetInvoice(currentPage);
 
   const data = dataInvoice?.data?.data?.invoiceData;
-
-  const createQueryString = useCallback(
-    (name, value) => {
-      const params = new URLSearchParams(searchParams);
-      params.set(name, value);
-
-      return params.toString();
-    },
-    [searchParams],
-  );
 
   const handleNextItem = () => {
     setCurrentPage((prevPage) => String(Number(prevPage) + 1));
@@ -54,9 +51,11 @@ export default function InvoiceTable() {
 
   useEffect(() => {
     if (currentPage) {
-      router.push(pathname + '?' + createQueryString('page', currentPage));
+      router.push(
+        pathname + '?' + createQueryString(searchParams, 'page', currentPage),
+      );
     }
-  }, [currentPage, pathname, router, createQueryString]);
+  }, [currentPage, pathname, router, searchParams]);
 
   useEffect(() => {
     if (dataInvoice) {
@@ -65,19 +64,26 @@ export default function InvoiceTable() {
   }, [dataInvoice]);
 
   useEffect(() => {
-    if (!searchParams.get('page')) {
-      router.push(pathname + '?' + createQueryString('page', '1'));
+    if (!searchParams.get('page') || searchParams.get('page') > totalPage) {
+      router.push(
+        pathname + '?' + createQueryString(searchParams, 'page', '1'),
+      );
     }
-  }, [searchParams, pathname, router, createQueryString]);
+  }, [searchParams, pathname, router]);
 
   return (
     <Card className='p-3'>
-      <CardHeader className='px-7'>
-        <CardTitle>Invoice</CardTitle>
-        <CardDescription>Recent invoice from your store.</CardDescription>
+      <CardHeader className='flex flex-row items-center'>
+        <div className='grid gap-2'>
+          <CardTitle>Invoice</CardTitle>
+          <CardDescription>Recent invoice from your store.</CardDescription>
+        </div>
+        <div size='sm' className='ml-auto gap-1'>
+          <InvoiceModal />
+        </div>
       </CardHeader>
       <CardContent>
-        <div className='min-h-[320px] min-w-[700px]'>
+        <div className='lg:min-h-[320px] lg:min-w-[700px]'>
           <Table>
             <TableHeader>
               <TableRow>

@@ -2,6 +2,7 @@ import { Inter } from 'next/font/google';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import TanstackProvider from '@/provider/TanstackQuery';
+import { Toaster } from '@/components/ui/toaster';
 import './globals.css';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -19,6 +20,7 @@ export default function RootLayout({ children }) {
           <main className='flex min-h-screen flex-col justify-between'>
             <Navbar />
             <div className='pt-4'>{children}</div>
+            <Toaster />
             <Footer />
           </main>
         </TanstackProvider>

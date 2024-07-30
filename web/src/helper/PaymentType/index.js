@@ -1,5 +1,5 @@
 export function FirstCapital(payment) {
-  if (payment == 'NOTCASHORCREDIT') return 'Not Cash Or Credit';
+  if (payment == 'NOTCASHORCREDIT') return 'Other';
 
   let element = payment;
   let elementToArr = element.split('');
