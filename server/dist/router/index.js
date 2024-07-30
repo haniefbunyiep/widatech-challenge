@@ -28,7 +28,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importStar(require("express"));
 const InvoiceRouter_1 = __importDefault(require("./../api/invoice/InvoiceRouter"));
+const ProductRouter_1 = __importDefault(require("./../api/product/ProductRouter"));
 const router = (0, express_1.Router)();
 router.use('/invoice', InvoiceRouter_1.default);
+router.use('/product', ProductRouter_1.default);
 router.use(express_1.default.json());
 exports.default = router;

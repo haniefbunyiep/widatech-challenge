@@ -15,7 +15,8 @@ import { Label } from '@/components/ui/label';
 import { IoMdAdd } from 'react-icons/io';
 import { invoiceFormSchema } from '@/helper/invoice/schema';
 import { useFormik } from 'formik';
-import ComboboxForm from '../Dropdown/ProductDropdown';
+import PaymentInput from '../Dropdown/PaymentDropdown';
+import ProductInput from '../Dropdown/ProductDropdown';
 
 export default function InvoiceModal() {
   const formik = useFormik({
@@ -23,6 +24,13 @@ export default function InvoiceModal() {
       customer: '',
       sales_person: '',
       payment_method: '',
+      selected_product: [
+        {
+          product_id: '',
+          quantity: '',
+          product_price: '',
+        },
+      ],
     },
     validationSchema: invoiceFormSchema,
     validateOnChange: false,
@@ -30,6 +38,20 @@ export default function InvoiceModal() {
       console.log('Form values:', values);
     },
   });
+
+  const handleAddProduct = () => {
+    formik.setFieldValue('selected_product', [
+      ...formik.values.selected_product,
+      { product_id: '', quantity: '', product_price: '' },
+    ]);
+  };
+
+  const handleRemoveProduct = (index) => {
+    const newProducts = formik.values.selected_product.filter(
+      (_, i) => i !== index,
+    );
+    formik.setFieldValue('selected_product', newProducts);
+  };
 
   return (
     <Dialog className='h-fit'>
@@ -81,24 +103,36 @@ export default function InvoiceModal() {
                 {formik.errors.sales_person}
               </Label>
             </div>
-            <div className='flex flex-col gap-2'>
+            <div className='flex w-full flex-col gap-2'>
+              <Label htmlFor='selected_product' className='text-left'>
+                Product
+              </Label>
+              {formik.values.selected_product.map((product, index) => (
+                <div key={index} className='flex items-center gap-2'>
+                  <ProductInput formik={formik} index={index} />
+                  <Button
+                    type='button'
+                    onClick={() => handleRemoveProduct(index)}
+                  >
+                    Remove
+                  </Button>
+                </div>
+              ))}
+              <Label className='text-destructive'>
+                {formik.errors.selected_product}
+              </Label>
+              <Button type='button' onClick={handleAddProduct}>
+                Add Product
+              </Button>
+            </div>
+            <div className='flex w-full flex-col gap-2'>
               <Label htmlFor='payment_method' className='text-left'>
                 Payment Method
               </Label>
-              <Input
-                id='payment_method'
-                name='payment_method'
-                placeholder='Payment Type'
-                className='col-span-3'
-                onChange={formik.handleChange}
-                value={formik.values.payment_method}
-              />
+              <PaymentInput formik={formik} />
               <Label className='text-destructive'>
                 {formik.errors.payment_method}
               </Label>
-            </div>
-            <div className='flex flex-col gap-2'>
-              <ComboboxForm />
             </div>
           </div>
           <DialogFooter>

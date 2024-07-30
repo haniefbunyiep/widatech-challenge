@@ -12,27 +12,28 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const PrismaClient_1 = require("./../config/PrismaClient");
 const main = () => __awaiter(void 0, void 0, void 0, function* () {
     yield PrismaClient_1.prisma.$transaction((tx) => __awaiter(void 0, void 0, void 0, function* () {
-        // Create the products
         yield tx.product.createMany({
             data: [
                 {
                     product_name: 'Book',
                     product_price: 10000,
                     stock: 20,
+                    image_url: 'https://media.istockphoto.com/id/173015527/photo/a-single-red-book-on-a-white-surface.jpg?s=612x612&w=0&k=20&c=AeKmdZvg2_bRY2Yct7odWhZXav8CgDtLMc_5_pjSItY=',
                 },
                 {
                     product_name: 'Pencil',
                     product_price: 15000,
                     stock: 25,
+                    image_url: 'https://media.istockphoto.com/id/1216610305/vector/pencil-icon-eraser-pen-flat-design-and-back-to-school-concept-on-white-background.jpg?s=612x612&w=0&k=20&c=mICIEriPcqGMPydZM1_gayHn4vuUK2KydQ8iygXFG7w=',
                 },
                 {
                     product_name: 'Eraser',
                     product_price: 8000,
                     stock: 40,
+                    image_url: 'https://media.istockphoto.com/id/1391798346/id/vektor/ikon-penghapus.jpg?s=612x612&w=0&k=20&c=tCxKYJ_szOp-tZm4VdIjOMjgt6VNZhRLOgruwYmu81k=',
                 },
             ],
         });
-        // Fetch the products we just created by their names
         const products = yield tx.product.findMany({
             where: {
                 product_name: {

@@ -16,7 +16,6 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { useGetInvoice } from '@/helper/invoice/hooks/useGetInvoice';
-import { FirstCapital } from '@/helper/PaymentType';
 import PaginationDemo from '../Pagination';
 import { useEffect, useState } from 'react';
 import { useSearchParams, usePathname, useRouter } from 'next/navigation';
@@ -40,6 +39,8 @@ export default function InvoiceTable() {
   const { dataInvoice } = useGetInvoice(currentPage);
 
   const data = dataInvoice?.data?.data?.invoiceData;
+
+  console.log(data);
 
   const handleNextItem = () => {
     setCurrentPage((prevPage) => String(Number(prevPage) + 1));
@@ -87,12 +88,12 @@ export default function InvoiceTable() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Customer</TableHead>
+                <TableHead className='hidden text-center sm:table-cell'>
+                  Order Date
+                </TableHead>
+                <TableHead className='text-center'>Customer</TableHead>
                 <TableHead className='hidden text-center sm:table-cell'>
                   Sales Person
-                </TableHead>
-                <TableHead className='hidden text-center sm:table-cell'>
-                  Product
                 </TableHead>
                 <TableHead className='hidden text-center sm:table-cell'>
                   Quantity
@@ -100,22 +101,25 @@ export default function InvoiceTable() {
                 <TableHead className='hidden text-center md:table-cell'>
                   Total Price
                 </TableHead>
-                <TableHead className='text-right'>Payment Method</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {data?.map((data) => (
                 <TableRow className='bg-accent' key={data?.id}>
                   <TableCell>
-                    <div className='font-medium'>{data?.customer_name}</div>
+                    <div className='text-center font-medium'>
+                      {data?.order_date.split('T')[0]}
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <div className='text-center font-medium'>
+                      {data?.customer_name}
+                    </div>
                   </TableCell>
                   <TableCell className='hidden text-center sm:table-cell'>
                     {data?.sales_person}
                   </TableCell>
                   <TableCell className='hidden text-center sm:table-cell'>
-                    {data?.product?.product_name}
-                  </TableCell>
-                  <TableCell className='hidden text-center md:table-cell'>
                     {data?.quantity}
                   </TableCell>
                   <TableCell className='text-center'>
@@ -123,9 +127,6 @@ export default function InvoiceTable() {
                       style: 'currency',
                       currency: 'IDR',
                     })}
-                  </TableCell>
-                  <TableCell className='text-center'>
-                    {FirstCapital(data?.payment_type)}
                   </TableCell>
                 </TableRow>
               ))}

@@ -19,7 +19,6 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover';
 import { useState } from 'react';
-import { useGetProduct } from '@/helper/product/hooks/useGetProduct';
 
 const payment = [
   {
@@ -36,11 +35,8 @@ const payment = [
   },
 ];
 
-export default function ProductInput(props) {
+export default function PaymentInput(props) {
   const [open, setOpen] = useState(false);
-  const { data } = useGetProduct();
-
-  const productData = data?.data?.data;
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -52,23 +48,23 @@ export default function ProductInput(props) {
           className='justify-between'
         >
           {props.formik.values.payment_method
-            ? productData.find(
-                (product) =>
-                  product.value === props.formik.values.payment_method,
+            ? payment.find(
+                (payment) =>
+                  payment.value === props.formik.values.payment_method,
               )?.label
-            : 'Select product...'}
+            : 'Select payment...'}
           <ChevronsUpDown className='ml-2 h-4 w-4 shrink-0 opacity-50' />
         </Button>
       </PopoverTrigger>
       <PopoverContent className='p-0'>
         <Command>
-          <CommandInput placeholder='Search product...' />
-          <CommandEmpty>No product found.</CommandEmpty>
+          <CommandInput placeholder='Search payment...' />
+          <CommandEmpty>No payment found.</CommandEmpty>
           <CommandGroup>
-            {productData?.map((product) => (
-              <CommandList key={product.id}>
+            {payment.map((payment) => (
+              <CommandList key={payment.value}>
                 <CommandItem
-                  value={product.value}
+                  value={payment.value}
                   onSelect={(currentValue) => {
                     props.formik.setFieldValue(
                       'payment_method',
@@ -87,7 +83,7 @@ export default function ProductInput(props) {
                         : 'opacity-0',
                     )}
                   />
-                  {product.product_name}
+                  {payment.label}
                 </CommandItem>
               </CommandList>
             ))}
