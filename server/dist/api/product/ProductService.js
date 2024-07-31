@@ -12,7 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getProductByIdService = exports.getProductService = void 0;
 const PrismaClient_1 = require("../../config/PrismaClient");
 const getProductService = (name) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log(name);
     if (name) {
         const findProductByName = yield PrismaClient_1.prisma.product.findMany({
             where: {

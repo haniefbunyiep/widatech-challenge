@@ -18,8 +18,11 @@ import { useFormik } from 'formik';
 import PaymentInput from '../Dropdown/PaymentDropdown';
 import ProductInput from '../Dropdown/ProductDropdown';
 import { MdDelete } from 'react-icons/md';
+import { useCreateInovice } from '@/helper/invoice/hooks/useCreateInvoice';
 
 export default function InvoiceModal() {
+  const { mutationCreateInvoice } = useCreateInovice();
+
   const formik = useFormik({
     initialValues: {
       customer: '',
@@ -28,7 +31,7 @@ export default function InvoiceModal() {
       selected_product: [
         {
           quantity: '',
-          product_price: '',
+          product_id: '',
         },
       ],
     },
@@ -36,13 +39,19 @@ export default function InvoiceModal() {
     validateOnChange: false,
     onSubmit: (values) => {
       console.log('Form values:', values);
+      mutationCreateInvoice({
+        customer_name: formik.values.customer,
+        sales_person: formik.values.sales_person,
+        selected_product: formik.values.selected_product,
+        payment_type: formik.values.payment_method,
+      });
     },
   });
 
   const handleAddProduct = () => {
     formik.setFieldValue('selected_product', [
       ...formik.values.selected_product,
-      { product_id: '', quantity: '', product_price: '' },
+      { product_id: '', quantity: '' },
     ]);
   };
 
@@ -108,14 +117,18 @@ export default function InvoiceModal() {
                 Product
               </Label>
               {formik.values.selected_product.map((product, index) => (
-                <div key={index} className='flex items-center gap-2'>
-                  <ProductInput formik={formik} index={index} />
-                  <Button
-                    type='button'
-                    onClick={() => handleRemoveProduct(index)}
-                  >
-                    <MdDelete />
-                  </Button>
+                <div key={index} className='flex w-full items-center gap-2'>
+                  <div className='w-[85%]'>
+                    <ProductInput formik={formik} index={index} />
+                  </div>
+                  {index == 0 ? null : (
+                    <Button
+                      type='button'
+                      onClick={() => handleRemoveProduct(index)}
+                    >
+                      <MdDelete />
+                    </Button>
+                  )}
                 </div>
               ))}
               <Label className='text-destructive'>

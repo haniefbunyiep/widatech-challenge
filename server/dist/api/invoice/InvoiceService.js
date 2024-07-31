@@ -64,7 +64,7 @@ const getInvoiceService = (pageNumber) => __awaiter(void 0, void 0, void 0, func
         skip: (Number(pageNumber) - 1) * LIMIT_PAGE,
         take: LIMIT_PAGE,
         orderBy: {
-            createdAt: 'asc',
+            order_date: 'desc',
         },
     });
     return {

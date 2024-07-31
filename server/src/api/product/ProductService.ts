@@ -1,8 +1,6 @@
 import { prisma } from '../../config/PrismaClient';
 
 export const getProductService = async (name: string) => {
-  console.log(name);
-
   if (name) {
     const findProductByName = await prisma.product.findMany({
       where: {

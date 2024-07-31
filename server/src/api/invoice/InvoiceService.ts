@@ -67,7 +67,7 @@ export const getInvoiceService = async (pageNumber: number) => {
     skip: (Number(pageNumber) - 1) * LIMIT_PAGE,
     take: LIMIT_PAGE,
     orderBy: {
-      createdAt: 'asc',
+      order_date: 'desc',
     },
   });
 

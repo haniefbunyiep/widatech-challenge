@@ -19,29 +19,6 @@ import { Check, ChevronsUpDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useGetProduct } from '@/helper/product/hooks/useGetProduct';
 
-const frameworks = [
-  {
-    value: 'next.js',
-    label: 'Next.js',
-  },
-  {
-    value: 'sveltekit',
-    label: 'SvelteKit',
-  },
-  {
-    value: 'nuxt.js',
-    label: 'Nuxt.js',
-  },
-  {
-    value: 'remix',
-    label: 'Remix',
-  },
-  {
-    value: 'astro',
-    label: 'Astro',
-  },
-];
-
 export default function ProductInput({ formik, index }) {
   const [value, setValue] = React.useState('');
   const [open, setOpen] = React.useState(false);
@@ -84,25 +61,27 @@ export default function ProductInput({ formik, index }) {
             <CommandInput placeholder='Search product...' />
             <CommandEmpty>No product found.</CommandEmpty>
             <CommandGroup>
-              {productData?.map((product) => (
-                <CommandList key={product.id}>
-                  <CommandItem
-                    value={product.id}
-                    onSelect={() => {
-                      setValue(product.id);
-                      setOpen(false);
-                    }}
-                  >
-                    <Check
-                      className={cn(
-                        'mr-2 h-4 w-4',
-                        value === product.id ? 'opacity-100' : 'opacity-0',
-                      )}
-                    />
-                    {product.product_name}
-                  </CommandItem>
-                </CommandList>
-              ))}
+              {productData?.map((product) => {
+                return (
+                  <CommandList key={product.id}>
+                    <CommandItem
+                      value={product.id}
+                      onSelect={() => {
+                        setValue(product.id);
+                        setOpen(false);
+                      }}
+                    >
+                      <Check
+                        className={cn(
+                          'mr-2 h-4 w-4',
+                          value === product.id ? 'opacity-100' : 'opacity-0',
+                        )}
+                      />
+                      {product.product_name}
+                    </CommandItem>
+                  </CommandList>
+                );
+              })}
             </CommandGroup>
           </Command>
         </PopoverContent>
