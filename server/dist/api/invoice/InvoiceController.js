@@ -49,50 +49,26 @@ const getInvoice = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
     }
 });
 exports.getInvoice = getInvoice;
-const month = [
-    'Januari',
-    'Februari',
-    'Maret',
-    'April',
-    'Mei',
-    'Juni',
-    'Juli',
-    'Agustus',
-    'September',
-    'Oktober',
-    'November',
-    'Desember',
-];
 const getRevenue = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        // console.log('Request body :', req.body);
-        const { dateRange } = req.body;
-        console.log(dateRange);
-        // console.log(!dateRange.startDate);
-        // let getCurrentDate = new Date();
-        // let currentDateToISOString = getCurrentDate.toISOString();
-        // let processDate = currentDateToISOString.split('-', 2).toString();
-        // const currentMonth = processDate.split(',')[1];
-        // const currentYear = processDate.split(',')[0];
-        // let firstDate = `${currentYear}-${currentMonth}-01`;
-        // let nextMonth = parseInt(currentMonth) + 1;
-        // let nextYear = parseInt(currentYear);
-        // if (nextMonth > 12) {
-        //   nextMonth = 1;
-        //   nextYear += 1;
-        // }
-        // let endDate = `${nextYear}-${nextMonth.toString().padStart(2, '0')}-01`;
-        // console.log(firstDate);
-        // console.log(endDate);
-        const getRevenueResult = yield (0, InvoiceService_1.getRevenueByDateRangeService)({
-            firstDate: dateRange.startDate,
-            endDate: dateRange.endDate,
-        });
-        return res.status(201).send({
-            error: false,
-            message: 'OK',
-            data: getRevenueResult,
-        });
+        const { dateRange, month } = req.body;
+        // console.log('Req body:', req.body);
+        console.log(month);
+        if (!month) {
+            const getRevenueResult = yield (0, InvoiceService_1.getRevenueByDateRangeService)({
+                firstDate: dateRange.startDate,
+                endDate: dateRange.endDate,
+            });
+            return res.status(201).send({
+                error: false,
+                message: 'OK',
+                data: getRevenueResult,
+            });
+        }
+        else {
+            const getRevenueByMonth = yield (0, InvoiceService_1.getRevenueInMonthService)({ month });
+            return;
+        }
     }
     catch (error) {
         next(error);

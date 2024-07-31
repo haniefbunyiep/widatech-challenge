@@ -75,7 +75,7 @@ const getInvoiceService = (pageNumber) => __awaiter(void 0, void 0, void 0, func
 exports.getInvoiceService = getInvoiceService;
 const getRevenueByDateRangeService = (_a) => __awaiter(void 0, [_a], void 0, function* ({ firstDate, endDate, }) {
     var _b;
-    console.log(firstDate);
+    // console.log(firstDate);
     const allProducts = yield PrismaClient_1.prisma.product.findMany({
         select: {
             id: true,
@@ -123,7 +123,10 @@ const getRevenueByDateRangeService = (_a) => __awaiter(void 0, [_a], void 0, fun
     return result;
 });
 exports.getRevenueByDateRangeService = getRevenueByDateRangeService;
-const getRevenueInMonthService = (_a) => __awaiter(void 0, [_a], void 0, function* ({ firstDate, endDate, }) {
+const getRevenueInMonthService = (_a) => __awaiter(void 0, [_a], void 0, function* ({ 
+// firstDate,
+// endDate,
+month, }) {
     // return await prisma.invoice.groupBy({
     //   by: ['product_id'],
     //   _sum: {
@@ -163,6 +166,13 @@ const getRevenueInMonthService = (_a) => __awaiter(void 0, [_a], void 0, functio
     //     },
     //   },
     // });
+    const currentMonth = new Date();
+    const firstDate = `${currentMonth.getFullYear()}-${String(month).padStart(2, '0')}-01`;
+    const nextMonthDate = new Date(currentMonth.getFullYear(), Number(month), 1);
+    nextMonthDate.setMonth(nextMonthDate.getMonth() + 1);
+    const endDate = `${nextMonthDate.getFullYear()}-${String(nextMonthDate.getMonth()).padStart(2, '0')}-01`;
+    console.log(firstDate); // Output: 2024-02-01
+    console.log(endDate); // Output: 2024-03-01
     const groupedData = yield PrismaClient_1.prisma.invoice.groupBy({
         by: ['product_id'],
         _sum: {
@@ -175,6 +185,7 @@ const getRevenueInMonthService = (_a) => __awaiter(void 0, [_a], void 0, functio
             },
         },
     });
+    // console.log(groupedData);
     const productIds = groupedData.map((item) => item.product_id);
     const products = yield PrismaClient_1.prisma.product.findMany({
         where: {
@@ -188,6 +199,7 @@ const getRevenueInMonthService = (_a) => __awaiter(void 0, [_a], void 0, functio
             total_quantity: item._sum.quantity,
         };
     });
+    console.log(result);
     return result;
 });
 exports.getRevenueInMonthService = getRevenueInMonthService;

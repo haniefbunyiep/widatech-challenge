@@ -84,7 +84,7 @@ export const getRevenueByDateRangeService = async ({
   firstDate: string;
   endDate: string;
 }) => {
-  console.log(firstDate);
+  // console.log(firstDate);
   const allProducts = await prisma.product.findMany({
     select: {
       id: true,
@@ -141,11 +141,13 @@ export const getRevenueByDateRangeService = async ({
 };
 
 export const getRevenueInMonthService = async ({
-  firstDate,
-  endDate,
+  // firstDate,
+  // endDate,
+  month,
 }: {
-  firstDate: string;
-  endDate: string;
+  // firstDate: string;
+  // endDate: string;
+  month: string;
 }) => {
   // return await prisma.invoice.groupBy({
   //   by: ['product_id'],
@@ -187,6 +189,22 @@ export const getRevenueInMonthService = async ({
   //   },
   // });
 
+  const currentMonth = new Date();
+
+  const firstDate = `${currentMonth.getFullYear()}-${String(month).padStart(
+    2,
+    '0'
+  )}-01`;
+
+  const nextMonthDate = new Date(currentMonth.getFullYear(), Number(month), 1);
+  nextMonthDate.setMonth(nextMonthDate.getMonth() + 1);
+  const endDate = `${nextMonthDate.getFullYear()}-${String(
+    nextMonthDate.getMonth()
+  ).padStart(2, '0')}-01`;
+
+  console.log(firstDate); // Output: 2024-02-01
+  console.log(endDate); // Output: 2024-03-01
+
   const groupedData = await prisma.invoice.groupBy({
     by: ['product_id'],
     _sum: {
@@ -199,6 +217,8 @@ export const getRevenueInMonthService = async ({
       },
     },
   });
+
+  // console.log(groupedData);
 
   const productIds = groupedData.map((item) => item.product_id);
   const products = await prisma.product.findMany({
@@ -214,6 +234,8 @@ export const getRevenueInMonthService = async ({
       total_quantity: item._sum.quantity,
     };
   });
+
+  console.log(result);
 
   return result;
 };
