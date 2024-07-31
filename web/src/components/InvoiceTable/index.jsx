@@ -16,7 +16,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { useGetInvoice } from '@/helper/invoice/hooks/useGetInvoice';
-import PaginationDemo from '../Pagination';
+import PaginationComponent from '../Pagination';
 import { useEffect, useState } from 'react';
 import { useSearchParams, usePathname, useRouter } from 'next/navigation';
 import InvoiceModal from '../InvoiceModal';
@@ -132,7 +132,7 @@ export default function InvoiceTable() {
           </Table>
         </div>
       </CardContent>
-      <PaginationDemo
+      <PaginationComponent
         totalPage={totalPage}
         currentPage={currentPage}
         nextItem={handleNextItem}

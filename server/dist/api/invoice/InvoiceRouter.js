@@ -5,4 +5,5 @@ const InvoiceController_1 = require("./InvoiceController");
 const router = (0, express_1.Router)();
 router.get('/', InvoiceController_1.getInvoice);
 router.post('/', InvoiceController_1.createInvoice);
+router.post('/revenue', InvoiceController_1.getRevenue);
 exports.default = router;

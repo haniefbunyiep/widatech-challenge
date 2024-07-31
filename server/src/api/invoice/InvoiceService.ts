@@ -23,7 +23,7 @@ export const createInvoiceService = async ({
     for (let i = 0; i < selected_product.length; i++) {
       if (selected_product[i].quantity > findProduct[i].stock)
         throw new Error(
-          `Insufficient stock for ${findProduct[i].product_name} products `
+          `Insufficient stock for ${findProduct[i].product_name} products stock ${findProduct[i].stock} `
         );
     }
 
@@ -75,4 +75,145 @@ export const getInvoiceService = async (pageNumber: number) => {
     totalPage,
     getInvoiceData,
   };
+};
+
+export const getRevenueByDateRangeService = async ({
+  firstDate,
+  endDate,
+}: {
+  firstDate: string;
+  endDate: string;
+}) => {
+  console.log(firstDate);
+  const allProducts = await prisma.product.findMany({
+    select: {
+      id: true,
+      product_name: true,
+    },
+  });
+
+  const productIdToName = new Map<number, string>();
+  for (const product of allProducts) {
+    productIdToName.set(product.id, product.product_name);
+  }
+
+  const salesData = await prisma.invoice.groupBy({
+    by: ['order_date', 'product_id'],
+    _sum: {
+      quantity: true,
+    },
+    where: {
+      order_date: {
+        gte: new Date(firstDate),
+        lt: new Date(endDate),
+      },
+    },
+  });
+
+  const formattedData: { [key: string]: any } = {};
+
+  for (const sale of salesData) {
+    const date = sale.order_date.toISOString().split('T')[0];
+    if (!formattedData[date]) {
+      formattedData[date] = {
+        date,
+      };
+    }
+    const productName = productIdToName.get(sale.product_id);
+    if (productName) {
+      formattedData[date][productName] = sale._sum.quantity ?? 0;
+    }
+  }
+
+  for (const date of Object.keys(formattedData)) {
+    for (const [productId, productName] of productIdToName.entries()) {
+      if (!(productName in formattedData[date])) {
+        formattedData[date][productName] = 0;
+      }
+    }
+  }
+
+  const result = Object.values(formattedData);
+  result.sort(
+    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+  );
+  return result;
+};
+
+export const getRevenueInMonthService = async ({
+  firstDate,
+  endDate,
+}: {
+  firstDate: string;
+  endDate: string;
+}) => {
+  // return await prisma.invoice.groupBy({
+  //   by: ['product_id'],
+  //   _sum: {
+  //     quantity: true,
+  //   },
+  //   where: {
+  //     order_date: {
+  //       gte: new Date(firstDate),
+  //       lt: new Date(endDate),
+  //     },
+  //   },
+  // });
+  // return await prisma.invoice.groupBy({
+  //   by: ['order_date'],
+  //   _sum: {
+  //     quantity: true,
+  //   },
+  //   where: {
+  //     order_date: {
+  //       gte: new Date(firstDate),
+  //       lt: new Date(endDate),
+  //     },
+  //   },
+  //   orderBy: {
+  //     order_date: 'asc',
+  //   },
+  // });
+  // return await prisma.invoice.groupBy({
+  //   by: ['product_id'],
+  //   _sum: {
+  //     quantity: true,
+  //   },
+  //   where: {
+  //     order_date: {
+  //       gte: new Date(firstDate),
+  //       lt: new Date(endDate),
+  //     },
+  //   },
+  // });
+
+  const groupedData = await prisma.invoice.groupBy({
+    by: ['product_id'],
+    _sum: {
+      quantity: true,
+    },
+    where: {
+      order_date: {
+        gte: new Date(firstDate),
+        lt: new Date(endDate),
+      },
+    },
+  });
+
+  const productIds = groupedData.map((item) => item.product_id);
+  const products = await prisma.product.findMany({
+    where: {
+      id: { in: productIds },
+    },
+  });
+
+  const result = groupedData.map((item) => {
+    const product = products.find((p) => p.id === item.product_id);
+    return {
+      product_name: product ? product.product_name : 'Unknown',
+      total_quantity: item._sum.quantity,
+    };
+  });
+
+  return result;
 };

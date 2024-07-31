@@ -30,7 +30,7 @@ const payment = [
     label: 'Credit',
   },
   {
-    value: 'NOTCASHORCREADIT',
+    value: 'NOTCASHORCREDIT',
     label: 'Other',
   },
 ];

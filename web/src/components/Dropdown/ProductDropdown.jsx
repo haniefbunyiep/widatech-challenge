@@ -45,7 +45,7 @@ export default function ProductInput({ formik, reset }) {
   console.log(productData);
 
   return (
-    <div className='flex items-center gap-2'>
+    <div className='flex flex-col items-center gap-2'>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
           <Button
@@ -95,6 +95,7 @@ export default function ProductInput({ formik, reset }) {
           </Command>
         </PopoverContent>
       </Popover>
+      <Label className='text-destructive'>{formik.errors.product_id}</Label>
     </div>
   );
 }

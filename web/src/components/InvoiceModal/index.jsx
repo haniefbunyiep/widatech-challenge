@@ -103,17 +103,18 @@ export default function InvoiceModal() {
   };
 
   useEffect(() => {
+    if (isSuccess) {
+      formik.resetForm();
+      productFormik.resetForm();
+      setSelected_product([]);
+    }
+  }, [isSuccess]);
+
+  useEffect(() => {
     if (resetProductInput) {
       setResetProductInput(false);
     }
   }, [resetProductInput]);
-
-  useEffect(() => {
-    if (isSuccess) {
-      formik.resetForm();
-      productFormik.resetForm();
-    }
-  }, [isSuccess]);
 
   return (
     <Dialog className='h-fit'>
@@ -123,7 +124,7 @@ export default function InvoiceModal() {
           <IoMdAdd size={20} />
         </Button>
       </DialogTrigger>
-      <DialogContent className='sm:max-w-[425px]'>
+      <DialogContent className='w-[700px] sm:max-w-[425px]'>
         <DialogHeader>
           <DialogTitle>Create Invoice</DialogTitle>
           <DialogDescription>
@@ -174,7 +175,7 @@ export default function InvoiceModal() {
                   formik={productFormik}
                   reset={resetProductInput}
                 />
-                <div>
+                <div className='flex flex-col items-center gap-2'>
                   <Input
                     type='number'
                     name={`quantity`}
@@ -190,16 +191,23 @@ export default function InvoiceModal() {
                   Reset
                 </Button>
               </div>
-              <ScrollArea className='flex h-[250px] snap-y snap-mandatory flex-col gap-2 rounded-md border p-4'>
-                {selected_product.map((product) => (
-                  <div key={product.product_id}>
-                    <ProductCard
-                      productId={product.product_id}
-                      deleteFn={handleRemoveProduct}
-                    />
-                  </div>
-                ))}
-              </ScrollArea>
+              {!selected_product.length ? (
+                <Label className='flex items-center justify-center p-5'>
+                  Please Add Product First
+                </Label>
+              ) : (
+                <ScrollArea className='flex h-[250px] snap-y snap-mandatory flex-col gap-2 rounded-md border p-4'>
+                  {selected_product.map((product) => (
+                    <div key={product.product_id}>
+                      <ProductCard
+                        productId={product.product_id}
+                        deleteFn={handleRemoveProduct}
+                        productQuantity={product.quantity}
+                      />
+                    </div>
+                  ))}
+                </ScrollArea>
+              )}
               <Button type='button' onClick={handleAddProduct}>
                 Add Product
               </Button>

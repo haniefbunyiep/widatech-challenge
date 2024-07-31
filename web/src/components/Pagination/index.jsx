@@ -7,7 +7,7 @@ import {
   PaginationPrevious,
 } from '@/components/ui/pagination';
 
-export default function PaginationDemo(props) {
+export default function PaginationComponent(props) {
   return (
     <Pagination>
       <PaginationContent>

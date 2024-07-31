@@ -1,5 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
-import { createInvoiceService, getInvoiceService } from './InvoiceService';
+import {
+  createInvoiceService,
+  getInvoiceService,
+  getRevenueByDateRangeService,
+  getRevenueInMonthService,
+} from './InvoiceService';
 
 export const createInvoice = async (
   req: Request,
@@ -9,8 +14,6 @@ export const createInvoice = async (
   try {
     const { customer_name, sales_person, selected_product, payment_type } =
       req.body;
-
-    // console.log(req.body);
 
     await createInvoiceService({
       customer_name,
@@ -48,6 +51,69 @@ export const getInvoice = async (
         invoiceData: getInvoiceData,
         totalPage,
       },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const month = [
+  'Januari',
+  'Februari',
+  'Maret',
+  'April',
+  'Mei',
+  'Juni',
+  'Juli',
+  'Agustus',
+  'September',
+  'Oktober',
+  'November',
+  'Desember',
+];
+
+export const getRevenue = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    // console.log('Request body :', req.body);
+
+    const { dateRange } = req.body;
+    console.log(dateRange);
+
+    // console.log(!dateRange.startDate);
+    // let getCurrentDate = new Date();
+    // let currentDateToISOString = getCurrentDate.toISOString();
+    // let processDate = currentDateToISOString.split('-', 2).toString();
+
+    // const currentMonth = processDate.split(',')[1];
+    // const currentYear = processDate.split(',')[0];
+
+    // let firstDate = `${currentYear}-${currentMonth}-01`;
+
+    // let nextMonth = parseInt(currentMonth) + 1;
+    // let nextYear = parseInt(currentYear);
+
+    // if (nextMonth > 12) {
+    //   nextMonth = 1;
+    //   nextYear += 1;
+    // }
+
+    // let endDate = `${nextYear}-${nextMonth.toString().padStart(2, '0')}-01`;
+
+    // console.log(firstDate);
+    // console.log(endDate);
+
+    const getRevenueResult = await getRevenueByDateRangeService({
+      firstDate: dateRange.startDate,
+      endDate: dateRange.endDate,
+    });
+    return res.status(201).send({
+      error: false,
+      message: 'OK',
+      data: getRevenueResult,
     });
   } catch (error) {
     next(error);
