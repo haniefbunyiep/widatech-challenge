@@ -14,7 +14,7 @@ const InvoiceService_1 = require("./InvoiceService");
 const createInvoice = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { customer_name, sales_person, selected_product, payment_type } = req.body;
-        console.log(req.body);
+        // console.log(req.body);
         yield (0, InvoiceService_1.createInvoiceService)({
             customer_name,
             sales_person,

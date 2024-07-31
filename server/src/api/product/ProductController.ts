@@ -29,6 +29,8 @@ export const getProductById = async (
   try {
     const { productId } = req.query;
 
+    console.log(req.query);
+
     const getProductResult = await getProductByIdService(Number(productId));
 
     return res.status(200).send({

@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+// ProductInput.jsx
+import React, { useEffect, useCallback } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import {
@@ -19,13 +20,18 @@ import { Check, ChevronsUpDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useGetProduct } from '@/helper/product/hooks/useGetProduct';
 
-export default function ProductInput({ formik, index }) {
+export default function ProductInput({ formik, reset }) {
   const [value, setValue] = React.useState('');
   const [open, setOpen] = React.useState(false);
 
   const { data } = useGetProduct();
-
   const productData = data?.data?.data;
+
+  useEffect(() => {
+    if (reset) {
+      setValue('');
+    }
+  }, [reset]);
 
   useEffect(() => {
     if (value) {
@@ -33,11 +39,9 @@ export default function ProductInput({ formik, index }) {
     }
   }, [value]);
 
-  // useEffect(() => {
-  //   if (formik.values.selected_product[index].quantity) {
-  //     formik.setFieldValue(`selected_product[${index}].product_id`, value);
-  //   }
-  // }, [formik.values.selected_product[index].quantity]);
+  console.log(reset);
+
+  console.log(value);
 
   return (
     <div className='flex items-center gap-2'>
@@ -61,45 +65,29 @@ export default function ProductInput({ formik, index }) {
             <CommandInput placeholder='Search product...' />
             <CommandEmpty>No product found.</CommandEmpty>
             <CommandGroup>
-              {productData?.map((product) => {
-                return (
-                  <CommandList key={product.id}>
-                    <CommandItem
-                      value={product.id}
-                      onSelect={() => {
-                        setValue(product.id);
-                        setOpen(false);
-                      }}
-                    >
-                      <Check
-                        className={cn(
-                          'mr-2 h-4 w-4',
-                          value === product.id ? 'opacity-100' : 'opacity-0',
-                        )}
-                      />
-                      {product.product_name}
-                    </CommandItem>
-                  </CommandList>
-                );
-              })}
+              {productData?.map((product) => (
+                <CommandList key={product.id}>
+                  <CommandItem
+                    value={product.id}
+                    onSelect={() => {
+                      setValue(product.id);
+                      setOpen(false);
+                    }}
+                  >
+                    <Check
+                      className={cn(
+                        'mr-2 h-4 w-4',
+                        value === product.id ? 'opacity-100' : 'opacity-0',
+                      )}
+                    />
+                    {product.product_name}
+                  </CommandItem>
+                </CommandList>
+              ))}
             </CommandGroup>
           </Command>
         </PopoverContent>
       </Popover>
-      <div>
-        {/* <Input
-          type='number'
-          id={`selected_product.${index}.quantity`}
-          name={`selected_product.${index}.quantity`}
-          placeholder='Quantity'
-          onChange={formik.handleChange}
-          value={formik.values.selected_product[index].quantity}
-        />
-        <Label className='text-destructive'>
-          {formik.touched.selected_product?.[index]?.quantity &&
-            formik.errors.selected_product?.[index]?.quantity}
-        </Label> */}
-      </div>
     </div>
   );
 }

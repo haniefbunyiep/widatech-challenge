@@ -29,6 +29,7 @@ exports.getProduct = getProduct;
 const getProductById = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { productId } = req.query;
+        console.log(req.query);
         const getProductResult = yield (0, ProductService_1.getProductByIdService)(Number(productId));
         return res.status(200).send({
             error: false,

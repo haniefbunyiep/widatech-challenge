@@ -16,13 +16,12 @@ import {
 import { Button } from '../ui/button';
 import { useGetProductDetail } from '@/helper/product/hooks/useGetProductDetail';
 
-export default function ProductCard(props) {
-  //   console.log(props);
-  const { data } = useGetProductDetail(props.productId);
+export default function ProductCard({ productId, deleteFn }) {
+  const { data } = useGetProductDetail(productId);
 
   const productData = data?.data?.data;
-  //   console.log(productData);
-  console.log(productData?.image_url);
+  console.log(productId);
+
   return (
     <Card className='mb-4 flex h-fit snap-center flex-col items-center justify-center gap-2 p-3'>
       <CardHeader className='flex h-full flex-row items-center gap-5'>
@@ -40,7 +39,7 @@ export default function ProductCard(props) {
       </CardHeader>
       <Button
         type='button'
-        onClick={props.deleteFn(props.id)}
+        onClick={() => deleteFn(productId)}
         className='w-full'
       >
         Delete

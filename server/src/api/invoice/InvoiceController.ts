@@ -10,7 +10,7 @@ export const createInvoice = async (
     const { customer_name, sales_person, selected_product, payment_type } =
       req.body;
 
-    console.log(req.body);
+    // console.log(req.body);
 
     await createInvoiceService({
       customer_name,

@@ -1,5 +1,3 @@
-'use client';
-
 import { Button } from '@/components/ui/button';
 import {
   Dialog,
@@ -15,9 +13,8 @@ import { invoiceFormSchema, productSchema } from '@/helper/invoice/schema';
 import { useFormik } from 'formik';
 import PaymentInput from '../Dropdown/PaymentDropdown';
 import ProductInput from '../Dropdown/ProductDropdown';
-import { MdDelete } from 'react-icons/md';
 import { useCreateInovice } from '@/helper/invoice/hooks/useCreateInvoice';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import ProductCard from '../ProductCard';
@@ -26,6 +23,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 export default function InvoiceModal() {
   const { mutationCreateInvoice } = useCreateInovice();
   const [selected_product, setSelected_product] = useState([]);
+  const [resetProductInput, setResetProductInput] = useState(false);
 
   const formik = useFormik({
     initialValues: {
@@ -63,25 +61,35 @@ export default function InvoiceModal() {
         ) {
           return [...items, values];
         }
-
         return items;
       });
       productFormik.resetForm();
+      setResetProductInput(true);
     },
   });
 
   const handleAddProduct = () => {
     productFormik.handleSubmit();
+    setResetProductInput(true);
   };
-
-  console.log(selected_product);
 
   const handleRemoveProduct = (productId) => {
     const filteredProduct = selected_product.filter(
       (product) => product.product_id !== productId,
     );
-    console.log(filteredProduct);
+    setSelected_product(filteredProduct);
   };
+
+  const handleReset = () => {
+    setResetProductInput(true);
+    productFormik.resetForm();
+  };
+
+  useEffect(() => {
+    if (resetProductInput) {
+      setResetProductInput(false);
+    }
+  }, [resetProductInput]);
 
   return (
     <Dialog className='h-fit'>
@@ -138,7 +146,10 @@ export default function InvoiceModal() {
                 Product
               </Label>
               <div className='flex gap-2'>
-                <ProductInput formik={productFormik} index={0} />
+                <ProductInput
+                  formik={productFormik}
+                  reset={resetProductInput}
+                />
                 <Input
                   type='number'
                   name={`quantity`}
@@ -146,18 +157,19 @@ export default function InvoiceModal() {
                   onChange={productFormik.handleChange}
                   value={productFormik.values.quantity}
                 />
+                <Button type='button' onClick={handleReset}>
+                  Reset
+                </Button>
               </div>
               <ScrollArea className='flex h-[250px] snap-y snap-mandatory flex-col gap-2 rounded-md border p-4'>
-                {selected_product.map((product) => {
-                  return (
-                    <div key={product.product_id}>
-                      <ProductCard
-                        productId={product.product_id}
-                        deleteFn={handleRemoveProduct}
-                      />
-                    </div>
-                  );
-                })}
+                {selected_product.map((product) => (
+                  <div key={product.product_id}>
+                    <ProductCard
+                      productId={product.product_id}
+                      deleteFn={handleRemoveProduct}
+                    />
+                  </div>
+                ))}
               </ScrollArea>
               <Button type='button' onClick={handleAddProduct}>
                 Add Product
