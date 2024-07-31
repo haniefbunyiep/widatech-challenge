@@ -13,27 +13,24 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { IoMdAdd } from 'react-icons/io';
-import { invoiceFormSchema } from '@/helper/invoice/schema';
+import { invoiceFormSchema, productSchema } from '@/helper/invoice/schema';
 import { useFormik } from 'formik';
 import PaymentInput from '../Dropdown/PaymentDropdown';
 import ProductInput from '../Dropdown/ProductDropdown';
 import { MdDelete } from 'react-icons/md';
 import { useCreateInovice } from '@/helper/invoice/hooks/useCreateInvoice';
+import { useState } from 'react';
+import { useGetProduct } from '@/helper/product/hooks/useGetProduct';
 
 export default function InvoiceModal() {
   const { mutationCreateInvoice } = useCreateInovice();
+  const [selected_product, setSelected_product] = useState([]);
 
   const formik = useFormik({
     initialValues: {
       customer: '',
       sales_person: '',
       payment_method: '',
-      selected_product: [
-        {
-          quantity: '',
-          product_id: '',
-        },
-      ],
     },
     validationSchema: invoiceFormSchema,
     validateOnChange: false,
@@ -42,24 +39,44 @@ export default function InvoiceModal() {
       mutationCreateInvoice({
         customer_name: formik.values.customer,
         sales_person: formik.values.sales_person,
-        selected_product: formik.values.selected_product,
+        selected_product: selected_product,
         payment_type: formik.values.payment_method,
       });
     },
   });
 
+  const productFormik = useFormik({
+    initialValues: {
+      quantity: '',
+      product_id: '',
+    },
+    validationSchema: productSchema,
+    validateOnChange: false,
+    onSubmit: (values) => {
+      setSelected_product((items) => {
+        if (
+          !items.find(
+            (selectedProduct) =>
+              selectedProduct.product_id === values.product_id,
+          )
+        ) {
+          return [...items, values];
+        }
+
+        return items;
+      });
+    },
+  });
+
   const handleAddProduct = () => {
-    formik.setFieldValue('selected_product', [
-      ...formik.values.selected_product,
-      { product_id: '', quantity: '' },
-    ]);
+    productFormik.handleSubmit();
   };
 
+  console.log(selected_product);
+
   const handleRemoveProduct = (index) => {
-    const newProducts = formik.values.selected_product.filter(
-      (_, i) => i !== index,
-    );
-    formik.setFieldValue('selected_product', newProducts);
+    const filteredProduct = selected_product.filter((_, i) => i !== index);
+    setSelected_product(filteredProduct);
   };
 
   return (
@@ -116,10 +133,25 @@ export default function InvoiceModal() {
               <Label htmlFor='selected_product' className='text-left'>
                 Product
               </Label>
-              {formik.values.selected_product.map((product, index) => (
+              <div className='flex gap-2'>
+                <ProductInput formik={productFormik} index={0} />
+                <Input
+                  // type='number'
+                  // id={`selected_product.${index}.quantity`}
+                  name={`quantity`}
+                  placeholder='Quantity'
+                  onChange={productFormik.handleChange}
+                  value={productFormik.values.quantity}
+                />
+              </div>
+              {/* <Label className='text-destructive'>
+                {formik.touched.selected_product?.[index]?.quantity &&
+                  formik.errors.selected_product?.[index]?.quantity}
+              </Label> */}
+              {selected_product.map((product, index) => (
                 <div key={index} className='flex w-full items-center gap-2'>
                   <div className='w-[85%]'>
-                    <ProductInput formik={formik} index={index} />
+                    <ProductInput formik={productFormik} index={index} />
                   </div>
                   {index == 0 ? null : (
                     <Button
@@ -149,7 +181,16 @@ export default function InvoiceModal() {
             </div>
           </div>
           <DialogFooter>
-            <Button type='submit'>Save changes</Button>
+            <Button
+              disabled={
+                !selected_product.length ||
+                productFormik.errors.product_id ||
+                productFormik.errors.quantity
+              }
+              type='submit'
+            >
+              Save changes
+            </Button>
           </DialogFooter>
         </form>
       </DialogContent>

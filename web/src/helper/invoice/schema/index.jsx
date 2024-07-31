@@ -17,7 +17,7 @@ import * as Yup from 'yup';
 //   //   .required('At least one item is required'),
 // });
 
-const productSchema = Yup.object().shape({
+export const productSchema = Yup.object().shape({
   product_id: Yup.number().required('Required'),
   quantity: Yup.number().required('Required'),
 });
@@ -26,5 +26,5 @@ export const invoiceFormSchema = Yup.object().shape({
   customer: Yup.string().required('Customer is required'),
   sales_person: Yup.string().required('Sales person is required'),
   payment_method: Yup.string().required('Payment method is required'),
-  selected_product: Yup.array().of(productSchema),
+  // selected_product: Yup.array().of(productSchema),
 });

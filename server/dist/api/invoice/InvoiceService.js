@@ -35,7 +35,7 @@ const createInvoiceService = (_a) => __awaiter(void 0, [_a], void 0, function* (
                     order_date: new Date(),
                     customer_name,
                     payment_type,
-                    quantity: selected_product[i].quantity,
+                    quantity: Number(selected_product[i].quantity),
                     sales_person,
                     product_id: selected_product[i].product_id,
                     total_price: findProduct[i].product_price * selected_product[i].quantity,

@@ -29,15 +29,15 @@ export default function ProductInput({ formik, index }) {
 
   useEffect(() => {
     if (value) {
-      formik.setFieldValue(`selected_product[${index}].product_id`, value);
+      formik.setFieldValue('product_id', value);
     }
   }, [value]);
 
-  useEffect(() => {
-    if (formik.values.selected_product[index].quantity) {
-      formik.setFieldValue(`selected_product[${index}].product_id`, value);
-    }
-  }, [formik.values.selected_product[index].quantity]);
+  // useEffect(() => {
+  //   if (formik.values.selected_product[index].quantity) {
+  //     formik.setFieldValue(`selected_product[${index}].product_id`, value);
+  //   }
+  // }, [formik.values.selected_product[index].quantity]);
 
   return (
     <div className='flex items-center gap-2'>
@@ -87,7 +87,7 @@ export default function ProductInput({ formik, index }) {
         </PopoverContent>
       </Popover>
       <div>
-        <Input
+        {/* <Input
           type='number'
           id={`selected_product.${index}.quantity`}
           name={`selected_product.${index}.quantity`}
@@ -98,7 +98,7 @@ export default function ProductInput({ formik, index }) {
         <Label className='text-destructive'>
           {formik.touched.selected_product?.[index]?.quantity &&
             formik.errors.selected_product?.[index]?.quantity}
-        </Label>
+        </Label> */}
       </div>
     </div>
   );
