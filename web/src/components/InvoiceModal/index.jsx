@@ -10,8 +10,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { IoMdAdd } from 'react-icons/io';
 import { invoiceFormSchema, productSchema } from '@/helper/invoice/schema';
 import { useFormik } from 'formik';
@@ -20,7 +18,10 @@ import ProductInput from '../Dropdown/ProductDropdown';
 import { MdDelete } from 'react-icons/md';
 import { useCreateInovice } from '@/helper/invoice/hooks/useCreateInvoice';
 import { useState } from 'react';
-import { useGetProduct } from '@/helper/product/hooks/useGetProduct';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import ProductCard from '../ProductCard';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 export default function InvoiceModal() {
   const { mutationCreateInvoice } = useCreateInovice();
@@ -65,6 +66,7 @@ export default function InvoiceModal() {
 
         return items;
       });
+      productFormik.resetForm();
     },
   });
 
@@ -74,9 +76,11 @@ export default function InvoiceModal() {
 
   console.log(selected_product);
 
-  const handleRemoveProduct = (index) => {
-    const filteredProduct = selected_product.filter((_, i) => i !== index);
-    setSelected_product(filteredProduct);
+  const handleRemoveProduct = (productId) => {
+    const filteredProduct = selected_product.filter(
+      (product) => product.product_id !== productId,
+    );
+    console.log(filteredProduct);
   };
 
   return (
@@ -136,36 +140,25 @@ export default function InvoiceModal() {
               <div className='flex gap-2'>
                 <ProductInput formik={productFormik} index={0} />
                 <Input
-                  // type='number'
-                  // id={`selected_product.${index}.quantity`}
+                  type='number'
                   name={`quantity`}
                   placeholder='Quantity'
                   onChange={productFormik.handleChange}
                   value={productFormik.values.quantity}
                 />
               </div>
-              {/* <Label className='text-destructive'>
-                {formik.touched.selected_product?.[index]?.quantity &&
-                  formik.errors.selected_product?.[index]?.quantity}
-              </Label> */}
-              {selected_product.map((product, index) => (
-                <div key={index} className='flex w-full items-center gap-2'>
-                  <div className='w-[85%]'>
-                    <ProductInput formik={productFormik} index={index} />
-                  </div>
-                  {index == 0 ? null : (
-                    <Button
-                      type='button'
-                      onClick={() => handleRemoveProduct(index)}
-                    >
-                      <MdDelete />
-                    </Button>
-                  )}
-                </div>
-              ))}
-              <Label className='text-destructive'>
-                {formik.errors.selected_product}
-              </Label>
+              <ScrollArea className='flex h-[250px] snap-y snap-mandatory flex-col gap-2 rounded-md border p-4'>
+                {selected_product.map((product) => {
+                  return (
+                    <div key={product.product_id}>
+                      <ProductCard
+                        productId={product.product_id}
+                        deleteFn={handleRemoveProduct}
+                      />
+                    </div>
+                  );
+                })}
+              </ScrollArea>
               <Button type='button' onClick={handleAddProduct}>
                 Add Product
               </Button>
