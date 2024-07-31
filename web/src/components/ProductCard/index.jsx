@@ -20,7 +20,6 @@ export default function ProductCard({ productId, deleteFn }) {
   const { data } = useGetProductDetail(productId);
 
   const productData = data?.data?.data;
-  console.log(productId);
 
   return (
     <Card className='mb-4 flex h-fit snap-center flex-col items-center justify-center gap-2 p-3'>
@@ -34,7 +33,9 @@ export default function ProductCard({ productId, deleteFn }) {
         </div>
         <div className='flex flex-col'>
           <CardTitle>{productData?.product_name}</CardTitle>
-          <CardDescription>Recent invoice from your store.</CardDescription>
+          <CardDescription>
+            <div>Quantity</div>
+          </CardDescription>
         </div>
       </CardHeader>
       <Button

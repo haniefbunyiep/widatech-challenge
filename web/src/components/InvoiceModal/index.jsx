@@ -19,9 +19,11 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import ProductCard from '../ProductCard';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { useToast } from '@/components/ui/use-toast';
 
 export default function InvoiceModal() {
-  const { mutationCreateInvoice } = useCreateInovice();
+  const { toast } = useToast();
+  const { mutationCreateInvoice, isSuccess } = useCreateInovice();
   const [selected_product, setSelected_product] = useState([]);
   const [resetProductInput, setResetProductInput] = useState(false);
 
@@ -59,9 +61,10 @@ export default function InvoiceModal() {
               selectedProduct.product_id === values.product_id,
           )
         ) {
-          return [...items, values];
+          return [values, ...items];
+        } else {
+          return items;
         }
-        return items;
       });
       productFormik.resetForm();
       setResetProductInput(true);
@@ -69,6 +72,20 @@ export default function InvoiceModal() {
   });
 
   const handleAddProduct = () => {
+    if (
+      selected_product.some(
+        (selectedProduct) =>
+          selectedProduct.product_id === productFormik.values.product_id,
+      )
+    ) {
+      toast({
+        title: 'Product already added',
+        description: 'This product is already in the invoice.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
     productFormik.handleSubmit();
     setResetProductInput(true);
   };
@@ -90,6 +107,13 @@ export default function InvoiceModal() {
       setResetProductInput(false);
     }
   }, [resetProductInput]);
+
+  useEffect(() => {
+    if (isSuccess) {
+      formik.resetForm();
+      productFormik.resetForm();
+    }
+  }, [isSuccess]);
 
   return (
     <Dialog className='h-fit'>
@@ -150,13 +174,18 @@ export default function InvoiceModal() {
                   formik={productFormik}
                   reset={resetProductInput}
                 />
-                <Input
-                  type='number'
-                  name={`quantity`}
-                  placeholder='Quantity'
-                  onChange={productFormik.handleChange}
-                  value={productFormik.values.quantity}
-                />
+                <div>
+                  <Input
+                    type='number'
+                    name={`quantity`}
+                    placeholder='Quantity'
+                    onChange={productFormik.handleChange}
+                    value={productFormik.values.quantity}
+                  />
+                  <Label className='text-destructive'>
+                    {productFormik.errors.quantity}
+                  </Label>
+                </div>
                 <Button type='button' onClick={handleReset}>
                   Reset
                 </Button>

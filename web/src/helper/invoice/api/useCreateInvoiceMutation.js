@@ -3,7 +3,7 @@ import { useMutation } from '@tanstack/react-query';
 import { axiosInstance } from '@/lib/AxiosInstance';
 
 export const useCreateInvoiceMutation = ({ onSuccess, onError }) => {
-  const { mutate } = useMutation({
+  const { mutate, isSuccess } = useMutation({
     mutationFn: async ({
       customer_name,
       sales_person,
@@ -22,5 +22,6 @@ export const useCreateInvoiceMutation = ({ onSuccess, onError }) => {
   });
   return {
     mutate,
+    isSuccess,
   };
 };

@@ -39,9 +39,10 @@ export default function ProductInput({ formik, reset }) {
     }
   }, [value]);
 
-  console.log(reset);
+  // console.log(reset);
 
-  console.log(value);
+  // console.log(value);
+  console.log(productData);
 
   return (
     <div className='flex items-center gap-2'>
@@ -80,7 +81,13 @@ export default function ProductInput({ formik, reset }) {
                         value === product.id ? 'opacity-100' : 'opacity-0',
                       )}
                     />
-                    {product.product_name}
+                    <div className='flex w-full justify-between'>
+                      <p>{product.product_name}</p>
+                      <div className='flex w-[45%] justify-between text-slate-400'>
+                        <div>Stock:</div>
+                        {product.stock}
+                      </div>
+                    </div>
                   </CommandItem>
                 </CommandList>
               ))}
