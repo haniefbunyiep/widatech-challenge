@@ -3,7 +3,7 @@ import { PaymentTypes } from '@prisma/client';
 export interface ProductItem {
   product_id: number;
   quantity: number;
-  product_price: number;
+  product_price?: number;
 }
 
 type SelectedProduct = ProductItem[];

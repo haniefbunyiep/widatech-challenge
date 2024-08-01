@@ -10,29 +10,35 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const PrismaClient_1 = require("./../config/PrismaClient");
+const generateRandomDate = (start, end) => {
+    const diff = end.getTime() - start.getTime();
+    const date = new Date(start.getTime() + Math.random() * diff);
+    return date;
+};
 const main = () => __awaiter(void 0, void 0, void 0, function* () {
     yield PrismaClient_1.prisma.$transaction((tx) => __awaiter(void 0, void 0, void 0, function* () {
-        // Create the products
         yield tx.product.createMany({
             data: [
                 {
                     product_name: 'Book',
                     product_price: 10000,
                     stock: 20,
+                    image_url: 'https://media.istockphoto.com/id/173015527/photo/a-single-red-book-on-a-white-surface.jpg?s=612x612&w=0&k=20&c=AeKmdZvg2_bRY2Yct7odWhZXav8CgDtLMc_5_pjSItY=',
                 },
                 {
                     product_name: 'Pencil',
                     product_price: 15000,
                     stock: 25,
+                    image_url: 'https://media.istockphoto.com/id/1216610305/vector/pencil-icon-eraser-pen-flat-design-and-back-to-school-concept-on-white-background.jpg?s=612x612&w=0&k=20&c=mICIEriPcqGMPydZM1_gayHn4vuUK2KydQ8iygXFG7w=',
                 },
                 {
                     product_name: 'Eraser',
                     product_price: 8000,
                     stock: 40,
+                    image_url: 'https://media.istockphoto.com/id/1391798346/id/vektor/ikon-penghapus.jpg?s=612x612&w=0&k=20&c=tCxKYJ_szOp-tZm4VdIjOMjgt6VNZhRLOgruwYmu81k=',
                 },
             ],
         });
-        // Fetch the products we just created by their names
         const products = yield tx.product.findMany({
             where: {
                 product_name: {
@@ -47,11 +53,14 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
                 product_price: product.product_price,
             };
         });
+        const today = new Date();
+        const startDate = new Date(today.getFullYear(), today.getMonth() - 1, today.getDate()); // 1 bulan lalu
+        const endDate = new Date(today.getFullYear(), today.getMonth() + 1, today.getDate()); // 1 bulan ke depan
         yield tx.invoice.createMany({
             data: [
                 {
                     customer_name: 'Nabil',
-                    order_date: new Date(),
+                    order_date: generateRandomDate(startDate, endDate),
                     payment_type: 'CREDIT',
                     product_id: productMap['Book'].id,
                     quantity: 3,
@@ -60,7 +69,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
                 },
                 {
                     customer_name: 'Nabil',
-                    order_date: new Date(),
+                    order_date: generateRandomDate(startDate, endDate),
                     payment_type: 'CREDIT',
                     product_id: productMap['Pencil'].id,
                     quantity: 2,
@@ -69,7 +78,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
                 },
                 {
                     customer_name: 'Nabil',
-                    order_date: new Date(),
+                    order_date: generateRandomDate(startDate, endDate),
                     payment_type: 'CASH',
                     product_id: productMap['Eraser'].id,
                     quantity: 5,
@@ -78,7 +87,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
                 },
                 {
                     customer_name: 'Given',
-                    order_date: new Date(),
+                    order_date: generateRandomDate(startDate, endDate),
                     payment_type: 'NOTCASHORCREDIT',
                     product_id: productMap['Pencil'].id,
                     quantity: 5,
@@ -87,7 +96,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
                 },
                 {
                     customer_name: 'Given',
-                    order_date: new Date(),
+                    order_date: generateRandomDate(startDate, endDate),
                     payment_type: 'CASH',
                     product_id: productMap['Eraser'].id,
                     quantity: 5,
@@ -96,7 +105,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
                 },
                 {
                     customer_name: 'Given',
-                    order_date: new Date(),
+                    order_date: generateRandomDate(startDate, endDate),
                     payment_type: 'CASH',
                     product_id: productMap['Book'].id,
                     quantity: 5,
@@ -105,7 +114,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
                 },
                 {
                     customer_name: 'Jeremy',
-                    order_date: new Date(),
+                    order_date: generateRandomDate(startDate, endDate),
                     payment_type: 'NOTCASHORCREDIT',
                     product_id: productMap['Pencil'].id,
                     quantity: 5,
@@ -114,12 +123,103 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
                 },
                 {
                     customer_name: 'Jeremy',
-                    order_date: new Date(),
+                    order_date: generateRandomDate(startDate, endDate),
                     payment_type: 'CASH',
                     product_id: productMap['Eraser'].id,
                     quantity: 5,
                     sales_person: 'Admin 2',
                     total_price: 5 * productMap['Eraser'].product_price,
+                },
+                // Tambahan entri dengan tanggal yang berbeda
+                {
+                    customer_name: 'Alice',
+                    order_date: generateRandomDate(startDate, endDate),
+                    payment_type: 'CREDIT',
+                    product_id: productMap['Book'].id,
+                    quantity: 2,
+                    sales_person: 'Admin 1',
+                    total_price: 2 * productMap['Book'].product_price,
+                },
+                {
+                    customer_name: 'Bob',
+                    order_date: generateRandomDate(startDate, endDate),
+                    payment_type: 'CASH',
+                    product_id: productMap['Pencil'].id,
+                    quantity: 7,
+                    sales_person: 'Admin 3',
+                    total_price: 7 * productMap['Pencil'].product_price,
+                },
+                {
+                    customer_name: 'Charlie',
+                    order_date: generateRandomDate(startDate, endDate),
+                    payment_type: 'NOTCASHORCREDIT',
+                    product_id: productMap['Eraser'].id,
+                    quantity: 4,
+                    sales_person: 'Admin 2',
+                    total_price: 4 * productMap['Eraser'].product_price,
+                },
+                {
+                    customer_name: 'Diana',
+                    order_date: generateRandomDate(startDate, endDate),
+                    payment_type: 'CASH',
+                    product_id: productMap['Book'].id,
+                    quantity: 1,
+                    sales_person: 'Admin 1',
+                    total_price: 1 * productMap['Book'].product_price,
+                },
+                {
+                    customer_name: 'Edward',
+                    order_date: generateRandomDate(startDate, endDate),
+                    payment_type: 'CREDIT',
+                    product_id: productMap['Pencil'].id,
+                    quantity: 6,
+                    sales_person: 'Admin 3',
+                    total_price: 6 * productMap['Pencil'].product_price,
+                },
+                {
+                    customer_name: 'Fiona',
+                    order_date: generateRandomDate(startDate, endDate),
+                    payment_type: 'CASH',
+                    product_id: productMap['Eraser'].id,
+                    quantity: 3,
+                    sales_person: 'Admin 2',
+                    total_price: 3 * productMap['Eraser'].product_price,
+                },
+                {
+                    customer_name: 'George',
+                    order_date: generateRandomDate(startDate, endDate),
+                    payment_type: 'CREDIT',
+                    product_id: productMap['Book'].id,
+                    quantity: 4,
+                    sales_person: 'Admin 4',
+                    total_price: 4 * productMap['Book'].product_price,
+                },
+                {
+                    customer_name: 'Hannah',
+                    order_date: generateRandomDate(startDate, endDate),
+                    payment_type: 'CASH',
+                    product_id: productMap['Pencil'].id,
+                    quantity: 8,
+                    sales_person: 'Admin 4',
+                    total_price: 8 * productMap['Pencil'].product_price,
+                },
+                {
+                    customer_name: 'Ian',
+                    order_date: generateRandomDate(startDate, endDate),
+                    payment_type: 'NOTCASHORCREDIT',
+                    product_id: productMap['Eraser'].id,
+                    quantity: 6,
+                    sales_person: 'Admin 4',
+                    total_price: 6 * productMap['Eraser'].product_price,
+                },
+                {
+                    customer_name: 'Julia',
+                    order_date: generateRandomDate(startDate, endDate),
+                    payment_type: 'CASH',
+                    product_id: productMap['Book'].id,
+                    quantity: 3,
+                    sales_person: 'Admin 5',
+                    total_price: 3 * productMap['Book'].product_price,
                 },
             ],
         });
