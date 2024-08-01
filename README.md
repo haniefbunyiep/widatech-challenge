@@ -37,3 +37,34 @@ Technologies Used
     Database:
     •	MySQL
     •	Prisma ORM
+
+Installation
+
+    Frontend
+    •	Navigate to the frontend directory:
+        cd ../web
+
+    •	Install frontend dependencies:
+        npm i
+
+    •	Start
+        npm run dev
+
+    Backend:
+    •	Navigate to the frontend directory:
+        cd ../server
+
+    •	Install frontend dependencies:
+        npm i
+
+    •	Generate Prisma client:
+        npx prisma generate
+
+    •	Create .env in root for database connection:
+        exp : DATABASE_URL="mysql://root:password@localhost:3306/database-name"
+
+    •	Generate Prisma migration development:
+        npx prisma migrate dev
+
+    •	Start:
+        npm run dev
