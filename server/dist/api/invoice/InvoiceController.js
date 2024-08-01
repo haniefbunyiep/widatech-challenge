@@ -52,8 +52,6 @@ exports.getInvoice = getInvoice;
 const getRevenue = (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { dateRange, month } = req.body;
-        // console.log('Req body:', req.body);
-        console.log(month);
         if (!month) {
             const getRevenueResult = yield (0, InvoiceService_1.getRevenueByDateRangeService)({
                 firstDate: dateRange.startDate,

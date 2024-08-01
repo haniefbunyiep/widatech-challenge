@@ -64,9 +64,6 @@ export const getRevenue = async (
 ) => {
   try {
     const { dateRange, month } = req.body;
-    // console.log('Req body:', req.body);
-
-    console.log(month);
 
     if (!month) {
       const getRevenueResult = await getRevenueByDateRangeService({
