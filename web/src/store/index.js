@@ -1,5 +1,3 @@
-// store/index.js
-
 import { configureStore } from '@reduxjs/toolkit';
 import productSlice from './product-slice';
 

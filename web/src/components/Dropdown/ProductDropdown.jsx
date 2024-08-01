@@ -42,7 +42,7 @@ export default function ProductInput({ formik, reset }) {
   // console.log(reset);
 
   // console.log(value);
-  console.log(productData);
+  // console.log(productData);
 
   return (
     <div className='flex flex-col items-center gap-2'>

@@ -80,7 +80,11 @@ export const getRevenue = async (
       });
     } else {
       const getRevenueByMonth = await getRevenueInMonthService({ month });
-      return;
+      return res.status(201).send({
+        error: false,
+        message: 'OK',
+        data: getRevenueByMonth,
+      });
     }
   } catch (error) {
     next(error);

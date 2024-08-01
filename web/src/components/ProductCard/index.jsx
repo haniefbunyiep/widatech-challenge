@@ -21,7 +21,7 @@ export default function ProductCard({ productId, deleteFn, productQuantity }) {
 
   const productData = data?.data?.data;
 
-  console.log(productData);
+  // console.log(productData);
 
   return (
     <Card className='mb-4 flex h-fit snap-center flex-col items-center justify-center gap-2 p-3'>

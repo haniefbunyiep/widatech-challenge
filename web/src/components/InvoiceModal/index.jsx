@@ -20,11 +20,16 @@ import { Label } from '@/components/ui/label';
 import ProductCard from '../ProductCard';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useToast } from '@/components/ui/use-toast';
+import { useDispatch, useSelector } from 'react-redux';
+import { addProduct, resetProduct, removeProduct } from '@/store/product-slice';
 
 export default function InvoiceModal() {
+  const productSelector = useSelector((state) => state.product);
+
+  const dispatch = useDispatch();
+
   const { toast } = useToast();
   const { mutationCreateInvoice, isSuccess } = useCreateInovice();
-  const [selected_product, setSelected_product] = useState([]);
   const [resetProductInput, setResetProductInput] = useState(false);
 
   const formik = useFormik({
@@ -40,7 +45,7 @@ export default function InvoiceModal() {
       mutationCreateInvoice({
         customer_name: formik.values.customer,
         sales_person: formik.values.sales_person,
-        selected_product: selected_product,
+        selected_product: productSelector.selectedProducts,
         payment_type: formik.values.payment_method,
       });
     },
@@ -54,18 +59,7 @@ export default function InvoiceModal() {
     validationSchema: productSchema,
     validateOnChange: false,
     onSubmit: (values) => {
-      setSelected_product((items) => {
-        if (
-          !items.find(
-            (selectedProduct) =>
-              selectedProduct.product_id === values.product_id,
-          )
-        ) {
-          return [values, ...items];
-        } else {
-          return items;
-        }
-      });
+      dispatch(addProduct(values));
       productFormik.resetForm();
       setResetProductInput(true);
     },
@@ -73,7 +67,7 @@ export default function InvoiceModal() {
 
   const handleAddProduct = () => {
     if (
-      selected_product.some(
+      productSelector.selectedProducts.some(
         (selectedProduct) =>
           selectedProduct.product_id === productFormik.values.product_id,
       )
@@ -91,10 +85,7 @@ export default function InvoiceModal() {
   };
 
   const handleRemoveProduct = (productId) => {
-    const filteredProduct = selected_product.filter(
-      (product) => product.product_id !== productId,
-    );
-    setSelected_product(filteredProduct);
+    dispatch(removeProduct({ product_id: productId }));
   };
 
   const handleReset = () => {
@@ -106,7 +97,7 @@ export default function InvoiceModal() {
     if (isSuccess) {
       formik.resetForm();
       productFormik.resetForm();
-      setSelected_product([]);
+      dispatch(resetProduct());
     }
   }, [isSuccess]);
 
@@ -191,13 +182,13 @@ export default function InvoiceModal() {
                   Reset
                 </Button>
               </div>
-              {!selected_product.length ? (
+              {!productSelector?.selectedProducts.length ? (
                 <Label className='flex items-center justify-center p-5'>
                   Please Add Product First
                 </Label>
               ) : (
                 <ScrollArea className='flex h-[250px] snap-y snap-mandatory flex-col gap-2 rounded-md border p-4'>
-                  {selected_product.map((product) => (
+                  {productSelector.selectedProducts.map((product) => (
                     <div key={product.product_id}>
                       <ProductCard
                         productId={product.product_id}
@@ -225,7 +216,7 @@ export default function InvoiceModal() {
           <DialogFooter>
             <Button
               disabled={
-                !selected_product.length ||
+                !productSelector.selectedProducts?.length ||
                 productFormik.errors.product_id ||
                 productFormik.errors.quantity
               }

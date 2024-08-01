@@ -8,6 +8,8 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
+  PieChart,
+  Pie,
 } from 'recharts';
 import Datepicker from 'react-tailwindcss-datepicker';
 import { Card, CardHeader } from '@/components/ui/card';
@@ -22,6 +24,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { Label } from '../ui/label';
 
 const monthData = [
   'Januari',
@@ -51,25 +54,6 @@ export default function SimpleLineChart() {
   });
 
   const [revenue, setRevenue] = useState([]);
-
-  // useEffect(() => {
-  //   if (month) {
-  //     setDate({ startDate: null, endDate: null });
-  //   }
-  // }, [month]);
-
-  useEffect(() => {
-    mutationGetRevenue({
-      dateRange: date,
-      month: month[1],
-    });
-  }, [date]);
-
-  useEffect(() => {
-    if (isSuccess && data?.data?.data) {
-      setRevenue(data.data.data);
-    }
-  }, [isSuccess, data]);
 
   const dataKeys =
     revenue.length > 0
@@ -107,6 +91,19 @@ export default function SimpleLineChart() {
     setMonth('');
   };
 
+  useEffect(() => {
+    mutationGetRevenue({
+      dateRange: date,
+      month: month[1],
+    });
+  }, [date]);
+
+  useEffect(() => {
+    if (isSuccess && data?.data?.data) {
+      setRevenue(data.data.data);
+    }
+  }, [isSuccess, data]);
+
   return (
     <Card className='flex w-full flex-col items-center justify-between'>
       <CardHeader>Graph Revenue</CardHeader>
@@ -129,7 +126,7 @@ export default function SimpleLineChart() {
                   {monthData.map((item, index) => {
                     return (
                       <div key={index}>
-                        <DropdownMenuRadioItem value={[item, index]}>
+                        <DropdownMenuRadioItem value={[item, index + 1]}>
                           {item}
                         </DropdownMenuRadioItem>
                       </div>
@@ -145,25 +142,63 @@ export default function SimpleLineChart() {
           </div>
         </div>
         <ResponsiveContainer width='100%' height={400}>
-          <LineChart
-            data={revenue}
-            margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-          >
-            <CartesianGrid strokeDasharray='5 5' />
-            <XAxis dataKey='date' />
-            <YAxis />
-            <Tooltip />
-            <Legend />
-            {dataKeys.map((key) => (
-              <Line
-                key={key}
-                type='monotone'
-                dataKey={key}
-                stroke={colors[key]}
-                activeDot={{ r: 8 }}
-              />
-            ))}
-          </LineChart>
+          {date?.endDate && date?.startDate ? (
+            <div className='flex h-full w-full items-center justify-center'>
+              <div className='relative flex h-full w-full items-center justify-center'>
+                {revenue.length === 0 ? (
+                  <Label className='flex h-full w-full items-center justify-center text-destructive'>
+                    No data found
+                  </Label>
+                ) : (
+                  <ResponsiveContainer width='100%' height={400}>
+                    <LineChart
+                      data={revenue}
+                      margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                    >
+                      <CartesianGrid strokeDasharray='5 5' />
+                      <XAxis dataKey='date' />
+                      <YAxis />
+                      <Tooltip />
+                      <Legend />
+                      {dataKeys.map((key) => (
+                        <Line
+                          key={key}
+                          type='monotone'
+                          dataKey={key}
+                          stroke={colors[key]}
+                          activeDot={{ r: 8 }}
+                        />
+                      ))}
+                    </LineChart>
+                  </ResponsiveContainer>
+                )}
+              </div>
+            </div>
+          ) : (
+            <div className='flex h-full w-full items-center justify-center'>
+              <div className='relative flex h-full w-full items-center justify-center'>
+                {revenue.length === 0 ? (
+                  <Label className='flex h-full w-full items-center justify-center text-destructive'>
+                    No data found
+                  </Label>
+                ) : (
+                  <PieChart width={500} height={400}>
+                    <Pie
+                      dataKey='total_quantity'
+                      isAnimationActive={false}
+                      data={revenue}
+                      cx={250}
+                      cy={200}
+                      outerRadius={100}
+                      fill='#8884d8'
+                      label
+                    />
+                    <Tooltip />
+                  </PieChart>
+                )}
+              </div>
+            </div>
+          )}
         </ResponsiveContainer>
       </div>
     </Card>

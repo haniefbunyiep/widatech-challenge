@@ -1,5 +1,3 @@
-// store/product-slice.js
-
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
@@ -11,21 +9,27 @@ const productSlice = createSlice({
   initialState,
   reducers: {
     addProduct: (state, action) => {
-      const existingProduct = state.selectedProducts.find(
-        (product) => product.product_id === action.payload.product_id,
-      );
-      if (!existingProduct) {
+      if (
+        !state.selectedProducts.find(
+          (product) => product.product_id === action.payload.product_id,
+        )
+      )
         state.selectedProducts.push(action.payload);
+      else {
+        state.selectedProducts;
       }
     },
     removeProduct: (state, action) => {
-      state.selectedProducts = state.selectedProducts.filter(
-        (product) => product.product_id !== action.payload,
+      return state.selectedProducts.filter(
+        (product) => product.product_id !== action.payload.product_id,
       );
+    },
+    resetProduct: () => {
+      return initialState;
     },
   },
 });
 
-export const { addProduct, removeProduct } = productSlice.actions;
+export const { addProduct, removeProduct, resetProduct } = productSlice.actions;
 
 export default productSlice;

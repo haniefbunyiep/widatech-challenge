@@ -67,7 +67,11 @@ const getRevenue = (req, res, next) => __awaiter(void 0, void 0, void 0, functio
         }
         else {
             const getRevenueByMonth = yield (0, InvoiceService_1.getRevenueInMonthService)({ month });
-            return;
+            return res.status(201).send({
+                error: false,
+                message: 'OK',
+                data: getRevenueByMonth,
+            });
         }
     }
     catch (error) {
