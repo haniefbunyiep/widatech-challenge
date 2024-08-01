@@ -67,7 +67,7 @@ export default function InvoiceModal() {
 
   const handleAddProduct = () => {
     if (
-      productSelector.selectedProducts.some(
+      productSelector.selectedProducts?.some(
         (selectedProduct) =>
           selectedProduct.product_id === productFormik.values.product_id,
       )
@@ -182,7 +182,7 @@ export default function InvoiceModal() {
                   Reset
                 </Button>
               </div>
-              {!productSelector?.selectedProducts.length ? (
+              {!productSelector?.selectedProducts?.length ? (
                 <Label className='flex items-center justify-center p-5'>
                   Please Add Product First
                 </Label>
@@ -216,7 +216,7 @@ export default function InvoiceModal() {
           <DialogFooter>
             <Button
               disabled={
-                !productSelector.selectedProducts?.length ||
+                !productSelector?.selectedProducts?.length ||
                 productFormik.errors.product_id ||
                 productFormik.errors.quantity
               }

@@ -9,23 +9,21 @@ const productSlice = createSlice({
   initialState,
   reducers: {
     addProduct: (state, action) => {
-      if (
-        !state.selectedProducts.find(
-          (product) => product.product_id === action.payload.product_id,
-        )
-      )
-        state.selectedProducts.push(action.payload);
-      else {
-        state.selectedProducts;
+      const product = action.payload;
+      const existingProduct = state.selectedProducts.find(
+        (p) => p.product_id === product.product_id,
+      );
+      if (!existingProduct) {
+        state.selectedProducts.push(product);
       }
     },
     removeProduct: (state, action) => {
-      return state.selectedProducts.filter(
-        (product) => product.product_id !== action.payload.product_id,
+      state.selectedProducts = state.selectedProducts.filter(
+        (p) => p.product_id !== action.payload.product_id,
       );
     },
-    resetProduct: () => {
-      return initialState;
+    resetProduct: (state) => {
+      state.selectedProducts = [];
     },
   },
 });
